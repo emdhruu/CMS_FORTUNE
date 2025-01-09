@@ -100,6 +100,8 @@ const About = () => {
         values.vision_description &&
         values.mission_title &&
         values.mission_description &&
+        values.key_success &&
+        values.what_we_do &&
         values.meta_title &&
         values.image &&
         values.meta_description &&
@@ -428,6 +430,46 @@ const About = () => {
                       className="ti-form-input"
                       placeholder="vision description"
                       rows="3"
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-12 gap-x-6">
+              <div className="col-span-6">
+                <div className="box">
+                  <div className="box-body space-y-4">
+                    <label htmlFor="input-label1" className="ti-form-label">
+                      Key to Success
+                    </label>
+                    <textarea
+                      name="key_success"
+                      value={values.key_success}
+                      onChange={(e) => {
+                        handleValueChange(e);
+                      }}
+                      className="ti-form-input"
+                      placeholder="Key to Success"
+                      rows="5"
+                    ></textarea>
+                  </div>
+                </div>
+              </div>
+              <div className="col-span-6">
+                <div className="box">
+                  <div className="box-body space-y-4">
+                    <label htmlFor="input-label1" className="ti-form-label">
+                      What we do
+                    </label>
+                    <textarea
+                      name="what_we_do"
+                      value={values.what_we_do}
+                      onChange={(e) => {
+                        handleValueChange(e);
+                      }}
+                      className="ti-form-input"
+                      placeholder="What we do"
+                      rows="5"
                     ></textarea>
                   </div>
                 </div>

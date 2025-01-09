@@ -33,15 +33,27 @@ const webcontact = require("../controller/web_contact.js");
 const webfaqs = require("../controller/web_faqs.js");
 const webfooter = require("../controller/web_footer.js");
 const webproject = require("../controller/web_projects.js");
+const webpreprojects = require("../controller/web_pre_projects.js");
 const store_setting = require("../controller/store_setting.js");
 const cropperLogic = require("../controller/cropper.js");
 const connection = require("../connection.js");
 const sub_category = require("../controller/sub_category.js");
+const pre_projects = require("../controller/preprojects.js");
 
 //authentication
 router.post("/register", middleware.register);
 router.post("/login", middleware.login);
 router.get("/logout", middleware.logout);
+
+//pre-projects
+router.get("/getallpreprojects", pre_projects.getallpreprojects);
+router.delete(
+  "/deletebyidpreprojects/:id",
+  pre_projects.deletebyidpre_projects
+);
+router.post("/createpreprojects", pre_projects.createpreprojects);
+router.put("/updatebyidpreprojects/:id", pre_projects.updatebyidpreprojects);
+router.get("/getbyidpreprojects/:id", pre_projects.getbyidpreprojects);
 
 //web_home
 router.get("/getallhome", home.getallhome);
@@ -66,6 +78,13 @@ router.post("/createabout", about.createabout);
 router.put("/updatebyidabout/:id?", about.updatebyidabout);
 router.put("/updateabout-status/:id", about.updatebyidaboutstatus);
 router.delete("/deletebyidabout/:id", about.deletebyidabout);
+
+//web_pre_projects
+router.get("/getallwebpreprojects", webpreprojects.getallpreprojects);
+router.put(
+  "/updatebyidwebpreprojects/:id?",
+  webpreprojects.updatebyidpreprojects
+);
 
 //web_blog
 router.get("/getallwebblog", webBlog.getallwebBlog);
@@ -322,8 +341,8 @@ router.post("/createproject", project.createproject);
 router.put("/update/:project_id", project.updatebyidproject);
 router.put("/status/:project_id", project.updatebyidprojectstatus);
 router.delete("/projectd/:project_id", project.deletebyidproject);
-router.post("/createspecification",project.createSpecification);
-router.put("/updatespecification/:id",project.updateSpecification);
+router.post("/createspecification", project.createSpecification);
+router.put("/updatespecification/:id", project.updateSpecification);
 
 //options
 router.get("/getalloptions", options.getalloptions);

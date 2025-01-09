@@ -48,7 +48,7 @@ const getbyidstore_setting = async (req, res) => {
     } else {
       return res.json({
         status: false,
-        message: "failed to update",
+        message: "failed to get data",
       });
     }
   } catch (error) {

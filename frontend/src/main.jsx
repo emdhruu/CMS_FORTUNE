@@ -59,6 +59,10 @@ import BuyersGuide from "./component/pagecomponent/BuyersGuide/BuyersGuide";
 import BuyersAdd from "./component/pagecomponent/BuyersGuide/AddBuyers";
 import BuyersEdit from "./component/pagecomponent/BuyersGuide/EditBuyers";
 import Addresses from "./component/pagecomponent/Common/Addresses";
+import WebPreProjects from "./component/pagecomponent/WebPreProjects/WebPreProjects";
+import PreProjects from "./component/PreProjects/PreProjects";
+import EditPreProjects from "./component/PreProjects/EditPreProjects";
+import AddPreProjects from "./component/PreProjects/AddPreProjects";
 
 const ProtectedRoute = ({ element }) => {
   const { isAuthenticated } = useAuth();
@@ -107,6 +111,18 @@ const router = createBrowserRouter([
             element: <ProjectCreate />,
           },
           { path: `list`, element: <Projects /> },
+          {
+            path: `pre-projects`,
+            element: <PreProjects />,
+          },
+          {
+            path: `pre-projects/edit/:id`,
+            element: <EditPreProjects />,
+          },
+          {
+            path: `pre-projects/add-new`,
+            element: <AddPreProjects />,
+          },
         ],
       },
       {
@@ -164,6 +180,10 @@ const router = createBrowserRouter([
           {
             path: `home`,
             element: <Home />,
+          },
+          {
+            path: `web-pre-projects`,
+            element: <WebPreProjects />,
           },
           {
             path: `slider`,

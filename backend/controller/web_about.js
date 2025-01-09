@@ -73,12 +73,14 @@ const createabout = async (req, res) => {
       mission_description,
       vision_title,
       vision_description,
+      key_success,
+      what_we_do,
       image,
       status,
     } = req.body;
 
     const data = await connection.query(
-      "INSERT INTO web_about (title,meta_title,meta_description,description,breadcrumb_name,cover_url,mission_title,mission_description,vision_title,vision_description,image,status,ip) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)",
+      "INSERT INTO web_about (title,meta_title,meta_description,description,breadcrumb_name,cover_url,mission_title,mission_description,vision_title,vision_description,key_success, what_we_do , image,status,ip) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
       [
         title,
         meta_title,
@@ -90,6 +92,8 @@ const createabout = async (req, res) => {
         mission_description,
         vision_title,
         vision_description,
+        key_success,
+        what_we_do,
         image,
         status,
         clientIP,
@@ -130,6 +134,8 @@ const updatebyidabout = async (req, res) => {
       mission_description,
       vision_title,
       vision_description,
+      key_success,
+      what_we_do,
       image,
       status,
       mission_img,
@@ -137,7 +143,7 @@ const updatebyidabout = async (req, res) => {
     } = req.body;
 
     const data = await connection.query(
-      "update web_about set title=?,meta_title=?,meta_description=?,description=?,breadcrumb_name=?,cover_url=?,mission_title=?,mission_description=?,vision_title=?,vision_description=?,image=?,status=?,mission_img=?, vision_img=? ,ip=? where id=?",
+      "update web_about set title=?,meta_title=?,meta_description=?,description=?,breadcrumb_name=?,cover_url=?,mission_title=?,mission_description=?,vision_title=?,vision_description=?, key_success=?, what_we_do=? ,image=?,status=?,mission_img=?, vision_img=? ,ip=? where id=?",
       [
         title,
         meta_title,
@@ -149,6 +155,8 @@ const updatebyidabout = async (req, res) => {
         mission_description,
         vision_title,
         vision_description,
+        key_success,
+        what_we_do,
         image,
         status,
         mission_img,
@@ -184,9 +192,10 @@ const deletebyidabout = async (req, res) => {
       throw new Error("Id not present");
     }
 
-    const data = await connection.query("update web_about set status=-1 WHERE id=?", [
-      id,
-    ]);
+    const data = await connection.query(
+      "update web_about set status=-1 WHERE id=?",
+      [id]
+    );
 
     if (data[0].affectedRows) {
       return res.json({

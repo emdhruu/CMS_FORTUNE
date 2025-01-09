@@ -12,8 +12,10 @@ const ProjectCreate = () => {
   const navigate = useNavigate();
 
   const [managerOpener, setManagerOpener] = useState(false);
-  const [addNewSpecificationField, setAddNewSpecificationField] = useState(false);
-  const [addNewSpecificationFieldData, setAddNewSpecificationFieldData] = useState([]);
+  const [addNewSpecificationField, setAddNewSpecificationField] =
+    useState(false);
+  const [addNewSpecificationFieldData, setAddNewSpecificationFieldData] =
+    useState([]);
   const [value, setValue] = useState("");
   const [value2, setValue2] = useState("");
   const [value3, setValue3] = useState("");
@@ -47,6 +49,7 @@ const ProjectCreate = () => {
     plans: [],
     short_des: "",
     brochure: "",
+    video: "",
     cat_id: "",
     pa_id: [],
     pl_id: "",
@@ -197,7 +200,7 @@ const ProjectCreate = () => {
       )
     ) {
       console.log();
-      
+
       toast.error("Please Fill all the fields!");
       return;
     }
@@ -221,7 +224,9 @@ const ProjectCreate = () => {
         listing_image: JSON.stringify(values.listing_image),
         plans: JSON.stringify(values.plans),
         cover_url: JSON.stringify(data.cover_url),
-        specification_data: addNewSpecificationFieldData ? JSON.stringify(addNewSpecificationFieldData): [],
+        specification_data: addNewSpecificationFieldData
+          ? JSON.stringify(addNewSpecificationFieldData)
+          : [],
       }),
     })
       .then((res) => res.json())
@@ -253,7 +258,9 @@ const ProjectCreate = () => {
   }, [files, listi, pdf]);
 
   const handleDeleteClick = (index) => {
-    const updatedData = addNewSpecificationFieldData.filter((_, i) => i !== index);
+    const updatedData = addNewSpecificationFieldData.filter(
+      (_, i) => i !== index
+    );
     setAddNewSpecificationFieldData(updatedData);
   };
 
@@ -294,7 +301,7 @@ const ProjectCreate = () => {
             fileSetter={setPlans}
             openSetter={setManagerOpener}
           />
-        ):  addNewSpecificationField ? (
+        ) : addNewSpecificationField ? (
           <AddSpecification
             openSetter={setAddNewSpecificationField}
             file={addNewSpecificationFieldData}
@@ -375,6 +382,23 @@ const ProjectCreate = () => {
                       }}
                       className="ti-form-input"
                       placeholder="Project iFrame Link of project's location"
+                    ></textarea>
+                  </div>
+                </div>
+                <div className="box">
+                  <div className="box-body space-y-5">
+                    <label htmlFor="input-label1" className="ti-form-label">
+                      Video Link
+                    </label>
+                    <textarea
+                      rows={4}
+                      name="video"
+                      value={values.video}
+                      onChange={(e) => {
+                        handleInputChange(e);
+                      }}
+                      className="ti-form-input"
+                      placeholder="Project Video Link of project"
                     ></textarea>
                   </div>
                 </div>
@@ -905,93 +929,97 @@ const ProjectCreate = () => {
                 </div>
               </div>
             </div>
-    <div className="grid grid-cols-12 gap-6">
-      <div className="col-span-12">
-        <div className="box xl:overflow-auto">
-          <div className="box-header flex">
-            <h5 className="box-title">Add Specification Data</h5>
-            <button>
-              <button
-               onClick={() => setAddNewSpecificationField(true)}
-               >
-                <span className="text-primary">Add new field +</span>
-              </button>
-            </button>
-          </div>
-          <div className="">
-            <div className="overflow-auto table-bordered">
-              <div className="app-container">
-                <form>
-                  <div className="table-bordered whitespace-nowrap rounded-sm overflow-auto">
-                    <table className="ti-custom-table ti-custom-table-head">
-                      <thead className="border">
-                        <tr>
-                          <th className="w-1">#</th>
-                          <th>Image</th>
-                          <th className="">Title</th>
-                          <th>Content</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {addNewSpecificationFieldData &&
-                          addNewSpecificationFieldData.map((row, index) => (
-                            <tr key={index}>
-                              <td>{index}</td>
-                              <td>
-                                <div>
-                                  {row.img &&
-                                    row.img.map((pathFile, i) => {
-                                      return (
-                                        <img
-                                          key={i}
-                                          src={`${
-                                            import.meta.env.VITE_CMS_URL
-                                          }api/transform/${pathFile}`}
-                                          className="col-span-4 h-12  rounded-t-sm"
-                                        />
-                                      );
-                                    })}
-                                </div>
-                              </td>
-                              <td>{row.title}</td>
-                              <td>{row.content}</td>
-                              <td className="flex justify-start">
-                                <div className="hs-tooltip ti-main-tooltip">
-                                  <button
-                                    type="button"
-                                    onClick={() => handleDeleteClick(index)}
-                                    className="todo-remove hs-tooltip-toggle w-8 h-8 ti-btn rounded-full p-0 transition-none focus:outline-none ti-btn-soft-danger"
-                                  >
-                                    <i className="ti ti-trash"></i>
-                                    <span
-                                      className="hs-tooltip-content ti-main-tooltip-content py-1 px-2 bg-gray-900 text-xs font-medium text-white shadow-sm dark:bg-slate-700"
-                                      role="tooltip"
-                                      data-popper-placement="top"
-                                      style={{
-                                        position: "fixed",
-                                        inset: "auto auto 0px 0px",
-                                        margin: "0px",
-                                        transform: "translate(985px, -281px)",
-                                      }}
-                                    >
-                                      Delete
-                                    </span>
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
-                      </tbody>
-                    </table>
+            <div className="grid grid-cols-12 gap-6">
+              <div className="col-span-12">
+                <div className="box xl:overflow-auto">
+                  <div className="box-header flex">
+                    <h5 className="box-title">Add Specification Data</h5>
+                    <button>
+                      <button onClick={() => setAddNewSpecificationField(true)}>
+                        <span className="text-primary">Add new field +</span>
+                      </button>
+                    </button>
                   </div>
-                </form>
+                  <div className="">
+                    <div className="overflow-auto table-bordered">
+                      <div className="app-container">
+                        <form>
+                          <div className="table-bordered whitespace-nowrap rounded-sm overflow-auto">
+                            <table className="ti-custom-table ti-custom-table-head">
+                              <thead className="border">
+                                <tr>
+                                  <th className="w-1">#</th>
+                                  <th>Image</th>
+                                  <th className="">Title</th>
+                                  <th>Content</th>
+                                  <th>Actions</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {addNewSpecificationFieldData &&
+                                  addNewSpecificationFieldData.map(
+                                    (row, index) => (
+                                      <tr key={index}>
+                                        <td>{index}</td>
+                                        <td>
+                                          <div>
+                                            {row.img &&
+                                              row.img.map((pathFile, i) => {
+                                                return (
+                                                  <img
+                                                    key={i}
+                                                    src={`${
+                                                      import.meta.env
+                                                        .VITE_CMS_URL
+                                                    }api/transform/${pathFile}`}
+                                                    className="col-span-4 h-12  rounded-t-sm"
+                                                  />
+                                                );
+                                              })}
+                                          </div>
+                                        </td>
+                                        <td>{row.title}</td>
+                                        <td>{row.content}</td>
+                                        <td className="flex justify-start">
+                                          <div className="hs-tooltip ti-main-tooltip">
+                                            <button
+                                              type="button"
+                                              onClick={() =>
+                                                handleDeleteClick(index)
+                                              }
+                                              className="todo-remove hs-tooltip-toggle w-8 h-8 ti-btn rounded-full p-0 transition-none focus:outline-none ti-btn-soft-danger"
+                                            >
+                                              <i className="ti ti-trash"></i>
+                                              <span
+                                                className="hs-tooltip-content ti-main-tooltip-content py-1 px-2 bg-gray-900 text-xs font-medium text-white shadow-sm dark:bg-slate-700"
+                                                role="tooltip"
+                                                data-popper-placement="top"
+                                                style={{
+                                                  position: "fixed",
+                                                  inset: "auto auto 0px 0px",
+                                                  margin: "0px",
+                                                  transform:
+                                                    "translate(985px, -281px)",
+                                                }}
+                                              >
+                                                Delete
+                                              </span>
+                                            </button>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                    )
+                                  )}
+                              </tbody>
+                            </table>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
             <div className="grid grid-cols-12 gap-x-6">
               <div className="col-span-12">
                 <div className="box">

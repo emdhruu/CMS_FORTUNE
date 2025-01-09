@@ -5,7 +5,7 @@ const getallproject = async (req, res) => {
   try {
     //  const data = await connection.query(`SELECT p.project_id, p.title AS project_title,p.meta_title AS project_meta_title,p.meta_description AS project_meta_desc,p.description AS project_desc,p.slug AS project_slug,p.cover_url,p.over_view,p.cover_type,p.listing_image,p.dimension,p.specification,p.plans,p.gallery_images,p.short_des,p.brochure,pc.cat_id AS category_id, pa.amenities_id AS amenity_id, pl.pl_id AS project_location_id, po.options_id AS option_id, ps.ps_id AS project_status FROM projects p LEFT JOIN project_category pc ON p.cat_id = pc.cat_id LEFT JOIN project_amenities pa ON p.project_id = pa.project_id LEFT JOIN project_location pl ON p.pl_id = pl.pl_id LEFT JOIN project_options po ON p.project_id = po.project_id LEFT JOIN project_status ps ON p.ps_id = ps.ps_id WHERE status>=0 `);
     const data = await connection.query(
-      `SELECT p.project_id, p.title AS project_title,p.meta_title AS project_meta_title,p.meta_description AS project_meta_desc,p.description AS project_desc,p.slug AS project_slug,p.cover_url,p.sub_cat_id as sub_category_id,p.iframe_link,p.latitude, p.rera_id, p.longitude, p.is_latest,p.over_view,p.cover_type,p.listing_image,p.listing_dimension,p.cover_dimension,p.specification,p.plans,p.plans_dimension,p.gallery_images,p.gallery_dimension,p.short_des,p.brochure,pc.cat_id AS category_id, pa_id AS amenities_id, pl.pl_id AS project_location_id, GROUP_CONCAT(DISTINCT po.options_id) AS option_id, ps.ps_id AS project_status,p.status FROM projects p LEFT JOIN project_category pc ON p.cat_id = pc.cat_id LEFT JOIN project_location pl ON p.pl_id = pl.pl_id LEFT JOIN project_options po ON p.project_id = po.project_id LEFT JOIN project_status ps ON p.ps_id = ps.ps_id WHERE p.status>=0 GROUP BY p.project_id, p.title,p.meta_title,p.meta_description,p.description,p.slug,p.cover_url,p.over_view,p.cover_type,p.listing_image,p.cover_dimension,p.specification,p.plans,p.gallery_images,p.short_des,p.brochure,pc.cat_id,pl.pl_id,ps.ps_id `
+      `SELECT p.project_id, p.title AS project_title,p.meta_title AS project_meta_title,p.meta_description AS project_meta_desc,p.description AS project_desc,p.slug AS project_slug,p.cover_url,p.sub_cat_id as sub_category_id,p.iframe_link,p.latitude, p.rera_id, p.longitude, p.is_latest,p.over_view,p.cover_type,p.listing_image,p.listing_dimension,p.cover_dimension,p.specification,p.plans,p.plans_dimension,p.gallery_images,p.gallery_dimension,p.short_des,p.brochure, p.video,pc.cat_id AS category_id, pa_id AS amenities_id, pl.pl_id AS project_location_id, GROUP_CONCAT(DISTINCT po.options_id) AS option_id, ps.ps_id AS project_status,p.status FROM projects p LEFT JOIN project_category pc ON p.cat_id = pc.cat_id LEFT JOIN project_location pl ON p.pl_id = pl.pl_id LEFT JOIN project_options po ON p.project_id = po.project_id LEFT JOIN project_status ps ON p.ps_id = ps.ps_id WHERE p.status>=0 GROUP BY p.project_id, p.title,p.meta_title,p.meta_description,p.description,p.slug,p.cover_url,p.over_view,p.cover_type,p.listing_image,p.cover_dimension,p.specification,p.plans,p.gallery_images,p.short_des,p.brochure,pc.cat_id,pl.pl_id,ps.ps_id `
     );
     if (data[0].length > 0) {
       return res.status(200).json({
@@ -36,9 +36,9 @@ const getbyidproject = async (req, res) => {
         message: " ID not found",
       });
     }
-    
+
     const data = await connection.query(
-      `SELECT p.project_id, p.title AS project_title,p.meta_title AS project_meta_title,p.meta_description AS project_meta_desc,p.description AS project_desc,p.slug AS project_slug,p.cover_url,p.sub_cat_id as sub_category_id,p.iframe_link,p.rera_id, p.latitude, p.longitude, p.is_latest,p.over_view,p.cover_type,p.listing_image,p.listing_dimension,p.cover_dimension,p.specification, p.specification_data,p.plans,p.plans_dimension,p.gallery_images,p.gallery_dimension,p.short_des,p.brochure,pc.cat_id AS category_id, pa_id AS amenities_id, pl.pl_id AS project_location_id, GROUP_CONCAT(DISTINCT po.options_id) AS option_id, ps.ps_id AS project_status,p.status FROM projects p LEFT JOIN project_category pc ON p.cat_id = pc.cat_id LEFT JOIN project_location pl ON p.pl_id = pl.pl_id LEFT JOIN project_options po ON p.project_id = po.project_id LEFT JOIN project_status ps ON p.ps_id = ps.ps_id WHERE p.status>=0 and p.project_id=? GROUP BY p.project_id, p.title,p.meta_title,p.meta_description,p.description,p.slug,p.cover_url,p.over_view,p.cover_type,p.listing_image,p.cover_dimension,p.specification,p.plans,p.gallery_images,p.short_des,p.brochure,pc.cat_id,pl.pl_id,ps.ps_id`,
+      `SELECT p.project_id, p.title AS project_title,p.meta_title AS project_meta_title,p.meta_description AS project_meta_desc,p.description AS project_desc,p.slug AS project_slug,p.cover_url,p.sub_cat_id as sub_category_id,p.iframe_link,p.rera_id, p.latitude, p.longitude, p.is_latest,p.over_view,p.cover_type,p.listing_image,p.listing_dimension,p.cover_dimension,p.specification, p.specification_data,p.plans,p.plans_dimension,p.gallery_images,p.gallery_dimension,p.short_des,p.brochure, p.video,pc.cat_id AS category_id, pa_id AS amenities_id, pl.pl_id AS project_location_id, GROUP_CONCAT(DISTINCT po.options_id) AS option_id, ps.ps_id AS project_status,p.status FROM projects p LEFT JOIN project_category pc ON p.cat_id = pc.cat_id LEFT JOIN project_location pl ON p.pl_id = pl.pl_id LEFT JOIN project_options po ON p.project_id = po.project_id LEFT JOIN project_status ps ON p.ps_id = ps.ps_id WHERE p.status>=0 and p.project_id=? GROUP BY p.project_id, p.title,p.meta_title,p.meta_description,p.description,p.slug,p.cover_url,p.over_view,p.cover_type,p.listing_image,p.cover_dimension,p.specification,p.plans,p.gallery_images,p.short_des,p.brochure,pc.cat_id,pl.pl_id,ps.ps_id`,
       [project_id]
     );
     if (data[0][0]?.project_id) {
@@ -88,13 +88,14 @@ const createproject = async (req, res) => {
       gallery_images,
       short_des,
       brochure,
+      video = null,
       is_latest,
       latitude,
       longitude,
       status,
     } = req.body;
     const data = await connection.query(
-      "INSERT INTO projects ( cat_id,pa_id,pl_id,po_id,ps_id,sub_cat_id,iframe_link,rera_id,title,meta_title,meta_description,description,slug,cover_url,over_view,cover_type,listing_image,specification, specification_data,plans,gallery_images,short_des,brochure,is_latest, latitude, longitude, status ,ip) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ",
+      "INSERT INTO projects ( cat_id,pa_id,pl_id,po_id,ps_id,sub_cat_id,iframe_link,rera_id,title,meta_title,meta_description,description,slug,cover_url,over_view,cover_type,listing_image,specification, specification_data,plans,gallery_images,short_des,brochure, video,is_latest, latitude, longitude, status ,ip) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) ",
       [
         cat_id,
         pa_id,
@@ -119,14 +120,14 @@ const createproject = async (req, res) => {
         gallery_images,
         short_des,
         brochure,
+        video,
         is_latest,
-        latitude,    // Corrected order
-        longitude,   // Corrected order
+        latitude,
+        longitude,
         status,
-        clientIP
+        clientIP,
       ]
     );
-    
 
     res.status(200).json({
       status: true,
@@ -177,13 +178,14 @@ const updatebyidproject = async (req, res) => {
       gallery_images,
       short_des,
       brochure,
+      video,
       is_latest,
       latitude,
       longitude,
       status,
     } = req.body;
     const data = await connection.query(
-      "update projects set cat_id=?,pa_id=?,pl_id=?,po_id=?,ps_id=?, sub_cat_id=?,iframe_link=?,rera_id=?,title=?,meta_title=?,meta_description=?,description=?,slug=?,cover_url=?,over_view=?,cover_type=?,listing_image=?,specification=?, specification_data=?,plans=?,gallery_images=?,short_des=?,brochure=?, is_latest=?, longitude=?, latitude=? ,status=?,ip=? where project_id=?",
+      "update projects set cat_id=?,pa_id=?,pl_id=?,po_id=?,ps_id=?, sub_cat_id=?,iframe_link=?,rera_id=?,title=?,meta_title=?,meta_description=?,description=?,slug=?,cover_url=?,over_view=?,cover_type=?,listing_image=?,specification=?, specification_data=?,plans=?,gallery_images=?,short_des=?,brochure=?, video=? , is_latest=?, longitude=?, latitude=? ,status=?,ip=? where project_id=?",
       [
         category_id,
         amenities_id,
@@ -208,6 +210,7 @@ const updatebyidproject = async (req, res) => {
         gallery_images,
         short_des,
         brochure,
+        video,
         is_latest,
         longitude,
         latitude,
@@ -319,9 +322,9 @@ const updatebyidprojectstatus = async (req, res) => {
 const createSpecification = async (req, res) => {
   try {
     const specificationData = req.body.map((item) => ({
-      img: item.img[0], 
+      img: item.img[0],
       title: item.title,
-      content: item.content
+      content: item.content,
     }));
 
     const data = await connection.query(
@@ -369,8 +372,6 @@ const updateSpecification = async (req, res) => {
   }
 };
 
-
-
 module.exports = {
   getallproject,
   getbyidproject,
@@ -379,5 +380,5 @@ module.exports = {
   deletebyidproject,
   updatebyidprojectstatus,
   createSpecification,
-  updateSpecification
+  updateSpecification,
 };

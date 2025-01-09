@@ -12,8 +12,10 @@ const ProjectEdit = () => {
   const navigate = useNavigate();
 
   const [managerOpener, setManagerOpener] = useState(false);
-  const [addNewSpecificationField, setAddNewSpecificationField] = useState(false);
-  const [addNewSpecificationFieldData, setAddNewSpecificationFieldData] = useState([]);
+  const [addNewSpecificationField, setAddNewSpecificationField] =
+    useState(false);
+  const [addNewSpecificationFieldData, setAddNewSpecificationFieldData] =
+    useState([]);
   const [image, setImage] = useState([]);
   const [files, setFiles] = useState([]);
   const [listi, setListi] = useState([]);
@@ -32,6 +34,7 @@ const ProjectEdit = () => {
     plans: [],
     short_des: "",
     brochure: "",
+    video: "",
     cat_id: "",
     pa_id: [],
     pl_id: "",
@@ -59,7 +62,9 @@ const ProjectEdit = () => {
         const listi_img = JSON.parse(data.data[0].listing_image);
         const pl = JSON.parse(data.data[0].plans);
         const amenities_id = JSON.parse(data.data[0].amenities_id);
-        setAddNewSpecificationFieldData(JSON.parse(decodeURIComponent(data.data[0].specification_data)));
+        setAddNewSpecificationFieldData(
+          JSON.parse(decodeURIComponent(data.data[0].specification_data))
+        );
         setImage(rawUrl);
         setFiles(imgs);
         setListi(listi_img);
@@ -199,8 +204,7 @@ const ProjectEdit = () => {
         values.over_view &&
         values.specification &&
         values.short_des &&
-        values.brochure &&
-        values.specification
+        values.brochure
       )
     ) {
       toast.error("Please Fill all the fields!");
@@ -226,9 +230,12 @@ const ProjectEdit = () => {
         listing_image: JSON.stringify(values.listing_image),
         plans: JSON.stringify(values.plans),
         cover_url: JSON.stringify(data.cover_url),
-        specification_data: addNewSpecificationFieldData ? JSON.stringify(addNewSpecificationFieldData) : []
+        specification_data: addNewSpecificationFieldData
+          ? JSON.stringify(addNewSpecificationFieldData)
+          : [],
       }),
-    }).then((res) => res.json())
+    })
+      .then((res) => res.json())
       .then((data) => {
         if (data.status) {
           toast.success("Project Updated succesfully");
@@ -237,7 +244,7 @@ const ProjectEdit = () => {
           toast.error(data.message);
         }
       });
-  };  
+  };
 
   useEffect(() => {
     fetchData();
@@ -261,7 +268,9 @@ const ProjectEdit = () => {
   }, [files, listi, pdf]);
 
   const handleDeleteClick = (index) => {
-    const updatedData = addNewSpecificationFieldData.filter((_, i) => i !== index);
+    const updatedData = addNewSpecificationFieldData.filter(
+      (_, i) => i !== index
+    );
     setAddNewSpecificationFieldData(updatedData);
   };
 
@@ -302,7 +311,7 @@ const ProjectEdit = () => {
             fileSetter={setPlans}
             openSetter={setManagerOpener}
           />
-        ) :  addNewSpecificationField ? (
+        ) : addNewSpecificationField ? (
           <AddSpecification
             openSetter={setAddNewSpecificationField}
             file={addNewSpecificationFieldData}
@@ -383,6 +392,23 @@ const ProjectEdit = () => {
                       }}
                       className="ti-form-input"
                       placeholder="Enter iFRame link of project's location"
+                    ></textarea>
+                  </div>
+                </div>
+                <div className="box">
+                  <div className="box-body space-y-5">
+                    <label htmlFor="input-label1" className="ti-form-label">
+                      Video Link
+                    </label>
+                    <textarea
+                      rows={4}
+                      name="video"
+                      value={values.video}
+                      onChange={(e) => {
+                        handleInputChange(e);
+                      }}
+                      className="ti-form-input"
+                      placeholder="Enter Video link of project"
                     ></textarea>
                   </div>
                 </div>
@@ -912,91 +938,95 @@ const ProjectEdit = () => {
                   </div>
                 </div>
               </div>
-      <div className="col-span-12">
-        <div className="box xl:overflow-auto">
-          <div className="box-header flex">
-            <h5 className="box-title">Add Specification Data</h5>
-            <button>
-              <button
-               onClick={() => setAddNewSpecificationField(true)}
-               >
-                <span className="text-primary">Add new field +</span>
-              </button>
-            </button>
-          </div>
-          <div>
-            <div className="overflow-auto table-bordered">
-              <div className="app-container">
-                <form>
-                  <div className="table-bordered whitespace-nowrap rounded-sm overflow-auto">
-                    <table className="ti-custom-table ti-custom-table-head">
-                      <thead className="border">
-                        <tr>
-                          <th className="w-1">#</th>
-                          <th>Image</th>
-                          <th className="">Title</th>
-                          <th>Content</th>
-                          <th>Actions</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {addNewSpecificationFieldData &&
-                          addNewSpecificationFieldData.map((row, index) => (
-                            <tr key={index}>
-                              <td>{index}</td>
-                              <td>
-                                <div>
-                                  {row.img &&
-                                    row.img.map((pathFile, i) => {
-                                      return (
-                                        <img
-                                          key={i}
-                                          src={`${
-                                            import.meta.env.VITE_CMS_URL
-                                          }api/transform/${pathFile}`}
-                                          className="col-span-4 h-12  rounded-t-sm"
-                                        />
-                                      );
-                                    })}
-                                </div>
-                              </td>
-                              <td>{row.title}</td>
-                              <td>{row.content}</td>
-                              <td className="flex justify-start">
-                                <div className="hs-tooltip ti-main-tooltip">
-                                  <button
-                                    type="button"
-                                    onClick={() => handleDeleteClick(index)}
-                                    className="todo-remove hs-tooltip-toggle w-8 h-8 ti-btn rounded-full p-0 transition-none focus:outline-none ti-btn-soft-danger"
-                                  >
-                                    <i className="ti ti-trash"></i>
-                                    <span
-                                      className="hs-tooltip-content ti-main-tooltip-content py-1 px-2 bg-gray-900 text-xs font-medium text-white shadow-sm dark:bg-slate-700"
-                                      role="tooltip"
-                                      data-popper-placement="top"
-                                      style={{
-                                        position: "fixed",
-                                        inset: "auto auto 0px 0px",
-                                        margin: "0px",
-                                        transform: "translate(985px, -281px)",
-                                      }}
-                                    >
-                                      Delete
-                                    </span>
-                                  </button>
-                                </div>
-                              </td>
-                            </tr>
-                          ))}
-                      </tbody>
-                    </table>
+              <div className="col-span-12">
+                <div className="box xl:overflow-auto">
+                  <div className="box-header flex">
+                    <h5 className="box-title">Add Specification Data</h5>
+                    <button>
+                      <button onClick={() => setAddNewSpecificationField(true)}>
+                        <span className="text-primary">Add new field +</span>
+                      </button>
+                    </button>
                   </div>
-                </form>
+                  <div>
+                    <div className="overflow-auto table-bordered">
+                      <div className="app-container">
+                        <form>
+                          <div className="table-bordered whitespace-nowrap rounded-sm overflow-auto">
+                            <table className="ti-custom-table ti-custom-table-head">
+                              <thead className="border">
+                                <tr>
+                                  <th className="w-1">#</th>
+                                  <th>Image</th>
+                                  <th className="">Title</th>
+                                  <th>Content</th>
+                                  <th>Actions</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                {addNewSpecificationFieldData &&
+                                  addNewSpecificationFieldData.map(
+                                    (row, index) => (
+                                      <tr key={index}>
+                                        <td>{index}</td>
+                                        <td>
+                                          <div>
+                                            {row.img &&
+                                              row.img.map((pathFile, i) => {
+                                                return (
+                                                  <img
+                                                    key={i}
+                                                    src={`${
+                                                      import.meta.env
+                                                        .VITE_CMS_URL
+                                                    }api/transform/${pathFile}`}
+                                                    className="col-span-4 h-12  rounded-t-sm"
+                                                  />
+                                                );
+                                              })}
+                                          </div>
+                                        </td>
+                                        <td>{row.title}</td>
+                                        <td>{row.content}</td>
+                                        <td className="flex justify-start">
+                                          <div className="hs-tooltip ti-main-tooltip">
+                                            <button
+                                              type="button"
+                                              onClick={() =>
+                                                handleDeleteClick(index)
+                                              }
+                                              className="todo-remove hs-tooltip-toggle w-8 h-8 ti-btn rounded-full p-0 transition-none focus:outline-none ti-btn-soft-danger"
+                                            >
+                                              <i className="ti ti-trash"></i>
+                                              <span
+                                                className="hs-tooltip-content ti-main-tooltip-content py-1 px-2 bg-gray-900 text-xs font-medium text-white shadow-sm dark:bg-slate-700"
+                                                role="tooltip"
+                                                data-popper-placement="top"
+                                                style={{
+                                                  position: "fixed",
+                                                  inset: "auto auto 0px 0px",
+                                                  margin: "0px",
+                                                  transform:
+                                                    "translate(985px, -281px)",
+                                                }}
+                                              >
+                                                Delete
+                                              </span>
+                                            </button>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                    )
+                                  )}
+                              </tbody>
+                            </table>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
             </div>
             <div className="grid grid-cols-12 gap-x-6">
               <div className="col-span-12">
