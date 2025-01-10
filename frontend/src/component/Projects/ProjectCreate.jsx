@@ -31,6 +31,7 @@ const ProjectCreate = () => {
   const [selectedValue3, setSelectedValue3] = useState(null);
   const [selectedValue4, setSelectedValue4] = useState(null);
   const [selectedValue5, setSelectedValue5] = useState(null);
+  const [video, setVideo] = useState([]);
   const [image, setImage] = useState([]);
   const [files, setFiles] = useState([]);
   const [listi, setListi] = useState([]);
@@ -185,21 +186,15 @@ const ProjectCreate = () => {
         values.project_title &&
         values.project_meta_title &&
         values.project_meta_desc &&
-        values.project_meta_desc &&
         values.project_slug &&
-        values.cover_url &&
-        values.cover_type &&
-        values.over_view &&
-        values.specification &&
+        values.cover_url?.length > 0 &&
         values.short_des &&
-        values.brochure &&
         cat &&
-        amenities &&
-        loc &&
-        values.specification
+        amenities?.length > 0 &&
+        loc
       )
     ) {
-      console.log();
+      console.log(values);
 
       toast.error("Please Fill all the fields!");
       return;
@@ -221,6 +216,7 @@ const ProjectCreate = () => {
         sub_category_id: subcat,
         pl_id: JSON.stringify(loc),
         gallery_images: JSON.stringify(values.gallery_images),
+        video: values.video ? JSON.stringify(values.video) : null,
         listing_image: JSON.stringify(values.listing_image),
         plans: JSON.stringify(values.plans),
         cover_url: JSON.stringify(data.cover_url),
@@ -249,13 +245,18 @@ const ProjectCreate = () => {
   }, [plans]);
 
   useEffect(() => {
+    setValue({ ...values, video: video });
+  }, [video]);
+
+  useEffect(() => {
     setValues({
       ...values,
       gallery_images: files,
       listing_image: listi,
       brochure: pdf,
+      video: video,
     });
-  }, [files, listi, pdf]);
+  }, [files, listi, pdf, video]);
 
   const handleDeleteClick = (index) => {
     const updatedData = addNewSpecificationFieldData.filter(
@@ -299,6 +300,12 @@ const ProjectCreate = () => {
             file={plans}
             ratio={785 / 785}
             fileSetter={setPlans}
+            openSetter={setManagerOpener}
+          />
+        ) : managerOpener === 6 ? (
+          <Filemanagermain
+            file={video}
+            fileSetter={setVideo}
             openSetter={setManagerOpener}
           />
         ) : addNewSpecificationField ? (
@@ -386,20 +393,51 @@ const ProjectCreate = () => {
                   </div>
                 </div>
                 <div className="box">
-                  <div className="box-body space-y-5">
-                    <label htmlFor="input-label1" className="ti-form-label">
-                      Video Link
-                    </label>
-                    <textarea
-                      rows={4}
-                      name="video"
-                      value={values.video}
-                      onChange={(e) => {
-                        handleInputChange(e);
-                      }}
-                      className="ti-form-input"
-                      placeholder="Project Video Link of project"
-                    ></textarea>
+                  <div className="box-header">Video</div>
+                  <div className="box-body space-y-4">
+                    {values.video && values.video.length > 0 ? (
+                      <>
+                        <div className="flex items-center gap-4">
+                          <button
+                            type="button"
+                            className="ti-btn rounded-md ti-btn-outline ti-btn-outline-primary"
+                            onClick={() => setManagerOpener(6)}
+                          >
+                            Change Video <i className="ti ti-video-plus"></i>
+                          </button>
+                          <button
+                            type="button"
+                            className="ti-btn rounded-md ti-btn-outline ti-btn-outline-danger"
+                            onClick={() => {
+                              setValues({ ...values, video: "" });
+                              toast.success("Video removed successfully");
+                            }}
+                          >
+                            Remove Video <i className="ti ti-trash"></i>
+                          </button>
+                        </div>
+                        <video
+                          controls
+                          className="box-img-top h-52 rounded-t-sm"
+                        >
+                          <source
+                            src={`${import.meta.env.VITE_CMS_URL}${
+                              values.video
+                            }`}
+                            type="video/mp4"
+                          />
+                          Your browser does not support the video tag.
+                        </video>
+                      </>
+                    ) : (
+                      <button
+                        type="button"
+                        className="ti-btn rounded-md ti-btn-outline ti-btn-outline-primary"
+                        onClick={() => setManagerOpener(6)}
+                      >
+                        Add Video <i className="ti ti-video-plus"></i>
+                      </button>
+                    )}
                   </div>
                 </div>
                 <div className="box">
@@ -784,31 +822,44 @@ const ProjectCreate = () => {
                 </div>
                 <div className="box">
                   <div className="box-header">Brochure</div>
-                  <div
-                    className="box-body space-y-4"
-                    onClick={() => setManagerOpener(4)}
-                  >
-                    {values.brochure ? (
+                  <div className="box-body space-y-4">
+                    {values.brochure && values.brochure.length > 0 ? (
                       <>
                         <button
                           type="button"
                           className="ti-btn rounded-md ti-btn-outline ti-btn-outline-primary"
+                          onClick={() => setManagerOpener(4)}
                         >
                           Change File <i className="ti ti-file-plus "></i>
                         </button>
-                        {values.brochure.length > 0 && (
-                          <label
-                            htmlFor="input-label1"
-                            className="ti-form-label"
-                          >
-                            {values.brochure[0]}
-                          </label>
+
+                        {values.brochure && values.brochure.length > 0 && (
+                          <div className="flex items-center gap-2 p-3 bg-gray-50 rounded-md border border-gray-200">
+                            <i className="ri-file-pdf-line text-xl text-red-500"></i>
+                            <label
+                              htmlFor="input-label1"
+                              className="ti-form-label text-sm text-gray-700"
+                            >
+                              {values.brochure[0]}
+                            </label>
+                            <button
+                              type="button"
+                              className="ml-auto p-1 text-gray-500 hover:text-red-500 transition-colors"
+                              onClick={() => {
+                                setValues({ ...values, brochure: "" });
+                                toast.success("Brochure removed successfully.");
+                              }}
+                            >
+                              <i className="ri-close-line text-lg"></i>
+                            </button>
+                          </div>
                         )}
                       </>
                     ) : (
                       <button
                         type="button"
                         className="ti-btn rounded-md ti-btn-outline ti-btn-outline-primary"
+                        onClick={() => setManagerOpener(4)}
                       >
                         Add File <i className="ti ti-file-plus "></i>
                       </button>

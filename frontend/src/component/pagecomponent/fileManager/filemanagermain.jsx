@@ -31,7 +31,6 @@ const Filemanagermain = ({ fileSetter, file, openSetter, modal_id, ratio }) => {
         setAllFileData(data.data);
         setFiles({ currentPath: path, files: data.data });
       });
-
   useEffect(() => {
     fileFetcher();
   }, []);
@@ -124,21 +123,30 @@ const Filemanagermain = ({ fileSetter, file, openSetter, modal_id, ratio }) => {
 
   const handleManagerFileSelect = (idx) => {
     let editedFile = idx.path.slice(7);
-    // let tempArray = [...selectFile];
-    // tempArray.push(editedFile);
-    // setSelectedFile((prv) => (prv = tempArray));
-    if (idx.extension !== ".pdf") {
+    if (
+      idx.extension === "mp4" ||
+      idx.extension === ".mov" ||
+      idx.extension === ".avi"
+    ) {
+      let tempArray = [...selectFile];
+      tempArray.push(editedFile);
+      setSelectedFile((prev) => (prev = tempArray));
+      toast.success(idx.name + " Video selected");
+    } else if (idx.extension !== ".pdf" && ratio) {
       setCropFile(editedFile);
+    } else if (idx.extension === ".pdf") {
+      let path = idx.path.slice(7);
+      setSelectedFile([path]);
+      toast.success(idx.name + " PDF selected");
     } else {
       let path = idx.path.slice(7);
       setSelectedFile([path]);
+      toast.success(idx.name + " File selected");
     }
-    toast.success(idx.name + " File selected");
   };
 
   return (
     files.files && (
-      // <div id={`manager${modal_id}`} className="hs-overlay hidden ti-modal">
       <div className="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out lg:!max-w-4xl lg:w-full  m-3 lg:!mx-auto">
         {CropFile ? (
           <Modal2
@@ -286,17 +294,34 @@ const Filemanagermain = ({ fileSetter, file, openSetter, modal_id, ratio }) => {
                                         }
                                       }}
                                     >
-                                      <img
-                                        src={`${
-                                          idx.type === "directory"
-                                            ? ALLImages("png49")
-                                            : `${
-                                                import.meta.env.VITE_CMS_URL
-                                              }${idx.path.slice(7)}`
-                                        }`}
-                                        alt="img"
-                                        className="w-10"
-                                      />
+                                      {idx.extension === ".pdf" ? (
+                                        <i className="ri-file-pdf-line text-2xl text-red-500"></i>
+                                      ) : idx.extension == ".mp4" ||
+                                        idx.extension == ".mov" ||
+                                        idx.extension == ".avi" ? (
+                                        <video className="w-10" controls>
+                                          <source
+                                            src={`${
+                                              import.meta.env.VITE_CMS_URL
+                                            }${idx.path.slice(7)}`}
+                                            type="video/mp4"
+                                          />
+                                          Your browser does not support the
+                                          video tag.
+                                        </video>
+                                      ) : (
+                                        <img
+                                          src={`${
+                                            idx.type === "directory"
+                                              ? ALLImages("png49")
+                                              : `${
+                                                  import.meta.env.VITE_CMS_URL
+                                                }${idx.path.slice(7)}`
+                                          }`}
+                                          alt="img"
+                                          className="w-10"
+                                        />
+                                      )}
                                       <span>{idx.name}</span>
                                     </button>
                                   </td>
@@ -392,8 +417,8 @@ const Filemanagermain = ({ fileSetter, file, openSetter, modal_id, ratio }) => {
 };
 
 const Modal = ({ path, fileFetcher, setModaler }) => {
-  const [image, setImage] = useState("");
-  const [files, setFiles] = useState("");
+  const [filePreview, setfilePreview] = useState("");
+  const [files, setFiles] = useState(null);
 
   const handleClose = () => {
     setModaler((prv) => (prv = !prv));
@@ -408,7 +433,7 @@ const Modal = ({ path, fileFetcher, setModaler }) => {
   //file uploader
   const handleUploadFile = () => {
     const formData = new FormData();
-    formData.set("fileName", files);
+    formData.append("fileName", files);
     fetch(`${import.meta.env.VITE_CMS_URL}api/upload-file/${path}`, {
       method: "POST",
       body: formData,
@@ -416,26 +441,36 @@ const Modal = ({ path, fileFetcher, setModaler }) => {
       .then((res) => res.json())
       .then((data) => {
         if (data.status) {
-          toast.success("file uploaded");
+          toast.success("File uploaded successfully");
           fileFetcher(path);
           handleClose();
+        } else {
+          toast.error("Failed to upload file.");
         }
+      })
+      .catch((error) => {
+        toast.error("Error while uploading file.");
       });
   };
 
-  //static image handler
-  const imageHandler = (e) => {
+  //file handler for preview
+  const fileHandler = (e) => {
     if (e.target.files && e.target.files[0]) {
-      setFiles(e.target.files[0]);
-      setImage(URL.createObjectURL(e.target.files[0]));
+      const file = e.target.files[0];
+      setFiles(file);
+
+      if (file.type && file.type.startsWith("video/")) {
+        setfilePreview(URL.createObjectURL(file));
+      } else if (file.type && file.type.startsWith("image/")) {
+        setfilePreview(URL.createObjectURL(file));
+      } else {
+        setfilePreview("");
+      }
     }
   };
 
   return (
-    <div
-      // onClick={handleClickClose}
-      className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-50"
-    >
+    <div className="fixed top-0 left-0 w-full h-full flex justify-center items-center bg-black bg-opacity-50 z-50">
       <div className="bg-white rounded-md p-8 max-w-md w-full">
         <div className="flex justify-between items-center">
           <h3 className="text-lg font-semibold">Add New File</h3>
@@ -455,11 +490,24 @@ const Modal = ({ path, fileFetcher, setModaler }) => {
             type="file"
             id="input-label"
             name="icon"
-            onChange={(e) => imageHandler(e)}
+            onChange={fileHandler}
             className="w-full py-2 px-3 border border-gray-300 rounded-md"
           />
-          {image && (
-            <img src={image} className="mt-4 w-full rounded-md" alt="Preview" />
+          {files && fileHandler && (
+            <div className="mt-4">
+              {files.type.startsWith("video/") ? (
+                <video controls className="w-full rounded-md">
+                  <source src={filePreview} type={files.type} />
+                  Your browser does not support the video tag.
+                </video>
+              ) : (
+                <img
+                  src={filePreview}
+                  className="mt-4 w-full rounded-md"
+                  alt="Preview"
+                />
+              )}
+            </div>
           )}
         </div>
         <div className="mt-8 flex justify-end">
@@ -517,84 +565,101 @@ const Modal2 = ({ AspectRatio, img, setImg, setSelectedFile, selectFile }) => {
     setCrop(crop);
   };
 
+  const isVideo =
+    (imageUrl && imageUrl.endsWith(".mp4")) ||
+    imageUrl.endsWith(".mov") ||
+    imageUrl.endsWith(".avi");
+
   return (
     <div className="hs-overlay-open:mt-7 ti-modal-box mt-0 ease-out ">
       <div className="ti-modal-content">
         <div className="p-5">
           <div className="space-y-5">
-            {imageUrl && (
-              <ReactCrop
-                crop={crop}
-                keepSelection
-                aspect={AspectRatio}
-                minWidth={MinDimension}
-                onChange={(crop, percentCrop) => setCrop(percentCrop)}
-              >
-                <img
-                  ref={imageRef}
+            {isVideo ? (
+              <video controls style={{ maxHeight: "70vh" }}>
+                <source
                   src={`${import.meta.env.VITE_CMS_URL}${imageUrl}`}
-                  alt="img-cropper"
-                  style={{ maxHeight: "70vh" }}
-                  onLoad={onImageLoad}
+                  type="video/mp4"
                 />
-              </ReactCrop>
+                Your browser does not support the video tag.
+              </video>
+            ) : (
+              imageUrl && (
+                <ReactCrop
+                  crop={crop}
+                  keepSelection
+                  aspect={AspectRatio}
+                  minWidth={MinDimension}
+                  onChange={(crop, percentCrop) => setCrop(percentCrop)}
+                >
+                  <img
+                    ref={imageRef}
+                    src={`${import.meta.env.VITE_CMS_URL}${imageUrl}`}
+                    alt="img-cropper"
+                    style={{ maxHeight: "70vh" }}
+                    onLoad={onImageLoad}
+                  />
+                </ReactCrop>
+              )
             )}
-            <button
-              className="ti-btn ti-btn-primary "
-              onClick={() => {
-                if (!previewCanvasRef.current || !imageRef.current) {
-                  return;
-                }
+            {!isVideo && (
+              <button
+                className="ti-btn ti-btn-primary "
+                onClick={() => {
+                  if (!previewCanvasRef.current || !imageRef.current) {
+                    return;
+                  }
 
-                const canvas = previewCanvasRef.current;
-                const ctx = canvas.getContext("2d");
+                  const canvas = previewCanvasRef.current;
+                  const ctx = canvas.getContext("2d");
 
-                const scaleX =
-                  imageRef.current.naturalWidth / imageRef.current.width;
-                const scaleY =
-                  imageRef.current.naturalHeight / imageRef.current.height;
+                  const scaleX =
+                    imageRef.current.naturalWidth / imageRef.current.width;
+                  const scaleY =
+                    imageRef.current.naturalHeight / imageRef.current.height;
 
-                const pixelCrop = convertToPixelCrop(
-                  crop,
-                  imageRef.current.width,
-                  imageRef.current.height
-                );
-                const scaledCrop = {
-                  x: Math.round(pixelCrop.x * scaleX),
-                  y: Math.round(pixelCrop.y * scaleY),
-                  width: Math.round(pixelCrop.width * scaleX),
-                  height: Math.round(pixelCrop.height * scaleY),
-                };
+                  const pixelCrop = convertToPixelCrop(
+                    crop,
+                    imageRef.current.width,
+                    imageRef.current.height
+                  );
+                  const scaledCrop = {
+                    x: Math.round(pixelCrop.x * scaleX),
+                    y: Math.round(pixelCrop.y * scaleY),
+                    width: Math.round(pixelCrop.width * scaleX),
+                    height: Math.round(pixelCrop.height * scaleY),
+                  };
 
-                canvas.width = scaledCrop.width;
-                canvas.height = scaledCrop.height;
+                  canvas.width = scaledCrop.width;
+                  canvas.height = scaledCrop.height;
 
-                ctx.drawImage(
-                  imageRef.current,
-                  scaledCrop.x,
-                  scaledCrop.y,
-                  scaledCrop.width,
-                  scaledCrop.height,
-                  0,
-                  0,
-                  scaledCrop.width,
-                  scaledCrop.height
-                );
+                  ctx.drawImage(
+                    imageRef.current,
+                    scaledCrop.x,
+                    scaledCrop.y,
+                    scaledCrop.width,
+                    scaledCrop.height,
+                    0,
+                    0,
+                    scaledCrop.width,
+                    scaledCrop.height
+                  );
 
-                setWidth(scaledCrop.width);
-                setHeight(scaledCrop.height);
-                setScaleX(scaledCrop.x);
-                setScaleY(scaledCrop.y);
-                const newUrl = `${imageUrl}?width=${scaledCrop.width}&height=${scaledCrop.height}&x=${scaledCrop.x}&y=${scaledCrop.y}`;
-                let tempArray = [...selectFile];
-                tempArray.push(newUrl);
-                setSelectedFile((prv) => (prv = tempArray));
-                setImg();
-              }}
-            >
-              Crop it
-            </button>
-            {crop && (
+                  setWidth(scaledCrop.width);
+                  setHeight(scaledCrop.height);
+                  setScaleX(scaledCrop.x);
+                  setScaleY(scaledCrop.y);
+                  const newUrl = `${imageUrl}?width=${scaledCrop.width}&height=${scaledCrop.height}&x=${scaledCrop.x}&y=${scaledCrop.y}`;
+                  let tempArray = [...selectFile];
+                  tempArray.push(newUrl);
+                  setSelectedFile((prv) => (prv = tempArray));
+                  setImg();
+                }}
+              >
+                Crop it
+              </button>
+            )}
+            {!isVideo && crop && (
               <canvas
                 ref={previewCanvasRef}
                 className="m-5"
@@ -627,14 +692,3 @@ const Modal2 = ({ AspectRatio, img, setImg, setSelectedFile, selectFile }) => {
 };
 
 export default Filemanagermain;
-
-// const filename = response.data.filename;
-// setTransformedUrl(
-//   `${import.meta.env.VITE_CMS_URL}transform/${filename}?width=${width}&height=${height}&x=${scaleX}&y=${scaleY}`
-// );
-// updateAvatar(transformedUrl);
-// console.log(transformedUrl);
-// } catch (error) {
-// console.error("Error uploading image:", error);
-// alert("Error uploading image.");
-// }
