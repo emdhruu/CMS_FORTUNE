@@ -23,30 +23,6 @@ const AddPreProjects = () => {
   const [logo, setLogo] = useState("");
   const [managerOpener, setManagerOpener] = useState();
 
-  //   const fetchData = () => {
-  //     fetch(`${import.meta.env.VITE_CMS_URL}api/getbyidpreprojects/${id}`)
-  //       .then((res) => res.json())
-  //       .then((data) => {
-  //         let rawImage = JSON.parse(data.data[0].image);
-  //         let rawCoverUrl = JSON.parse(data.data[0].cover_url);
-  //         let rawLogo = JSON.parse(data.data[0].logo);
-  //         setImage(rawImage);
-  //         setCoverUrl(rawCoverUrl);
-  //         setLogo(rawLogo);
-  //         setInput({
-  //           ...data.data[0],
-  //           image: rawImage,
-  //           cover_url: rawCoverUrl,
-  //           logo: rawLogo,
-  //         });
-  //       })
-  //       .catch((err) => toast.error(err.message));
-  //   };
-
-  //   useEffect(() => {
-  //     fetchData();
-  //   }, []);
-
   const handleChangeValue = (e) => {
     const { name, value } = e.target;
     setInput((prev) => {
@@ -109,34 +85,20 @@ const AddPreProjects = () => {
     }
   };
 
-  //   useEffect(() => {
-  //     if (image && logo && coverUrl) {
-  //       setInput(
-  //         (prv) =>
-  //           (prv = {
-  //             ...prv,
-  //             logo: [...logo],
-  //             cover_url: [...coverUrl],
-  //             image: [...image],
-  //           })
-  //       );
-  //     }
-  //   }, [logo, coverUrl, image]);
-
   return (
     input && (
       <div>
         {managerOpener == 1 ? (
           <Filemanagermain
             file={logo}
-            ratio={1960 / 600}
+            ratio={70 / 70}
             fileSetter={setLogo}
             openSetter={setManagerOpener}
           />
         ) : managerOpener == 2 ? (
           <Filemanagermain
             file={image}
-            ratio={1960 / 600}
+            ratio={1030 / 1285}
             fileSetter={setImage}
             openSetter={setManagerOpener}
           />

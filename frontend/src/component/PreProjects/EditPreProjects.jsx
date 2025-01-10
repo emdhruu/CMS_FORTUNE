@@ -123,14 +123,14 @@ const EditPreProjects = () => {
         {managerOpener == 1 ? (
           <Filemanagermain
             file={logo}
-            ratio={1960 / 600}
+            ratio={70/ 70}
             fileSetter={setLogo}
             openSetter={setManagerOpener}
           />
         ) : managerOpener == 2 ? (
           <Filemanagermain
             file={image}
-            ratio={1960 / 600}
+            ratio={1030 / 1285}
             fileSetter={setImage}
             openSetter={setManagerOpener}
           />
