@@ -98,14 +98,14 @@ const AddPreProjects = () => {
         ) : managerOpener == 2 ? (
           <Filemanagermain
             file={image}
-            ratio={1030 / 1285}
+            ratio={1190 / 700}
             fileSetter={setImage}
             openSetter={setManagerOpener}
           />
         ) : managerOpener == 3 ? (
           <Filemanagermain
             file={coverUrl}
-            ratio={1960 / 600}
+            ratio={1190 / 700}
             fileSetter={setCoverUrl}
             openSetter={setManagerOpener}
           />
