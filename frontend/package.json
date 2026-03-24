@@ -75,7 +75,7 @@
     "suneditor": "^2.45.1",
     "suneditor-react": "^3.6.1",
     "sweetalert2": "^11.7.20",
-    "swiper": "^10.0.4",
+    "swiper": "^12.1.2",
     "yet-another-react-lightbox": "^3.11.4"
   },
   "devDependencies": {
